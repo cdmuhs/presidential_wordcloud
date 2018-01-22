@@ -1,0 +1,72 @@
+---
+title: "Shiny App Pitch"
+author: "C. Muhs"
+date: "21 January 2018"
+output: ioslides_presentation
+transition: rotate
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## State of the Union Addresses
+
+The last three United States presidents have reputations in their word choices. George W Bush is known for simple word choices. Barack Obama is known as an inspiring and eloquent speaker. Donald Trump is known for having a raw, unfiltered vocabulary.
+
+### Question
+
+Would wordclouds from each of these presidents' State of the Union Addresses look different from one another?  
+
+For this class project, I made a Shiny app to answer this question
+
+## Process
+
+- find the transcripts of each of these speeches
+- use 'tm' package to mine the text files
+- use 'wordcloud' package to create wordclouds
+- configure shiny app to interact with the visualizations
+- sample wordcloud from Obama's 2009 SOTU address:
+```{r echo=FALSE, warning=FALSE, message=FALSE, fig.align='right'}
+library(tm)
+
+obama_txt = readLines("https://raw.githubusercontent.com/cdmuhs/presidential_wordcloud/master/prez_wc/obama.txt")
+
+toCorpus <- function(txt_file) {
+    myCorpus = Corpus(VectorSource(txt_file))
+    myCorpus = tm_map(myCorpus, tolower)
+    myCorpus = tm_map(myCorpus, removePunctuation)
+    myCorpus = tm_map(myCorpus, removeNumbers)
+    myCorpus = tm_map(myCorpus, removeWords, stopwords("english"))
+    myDTM = TermDocumentMatrix(myCorpus, control = list(minWordLength = 1))
+    m = as.matrix(myDTM)
+    v = sort(rowSums(m), decreasing = TRUE)
+    return(v)    
+}
+
+# create wordcloud object for each president
+# trumpCorpus <- toCorpus(trump_txt)
+obamaCorpus <- toCorpus(obama_txt)
+# bushCorpus <- toCorpus(bush_txt)
+
+library(wordcloud)
+set.seed(1234)
+wordcloud(names(obamaCorpus), obamaCorpus, min.freq = 10)
+
+```
+
+## Shiny app contents
+
+- instructions
+- dropdown with three presidential addresses as options
+- slider for word frequency in wordcloud
+- slider for maximum number of words in wordcloud
+- action button to generate wordcloud with input parameters
+- wordcloud visualization
+
+## Links
+
+- [the github repository](https://github.com/cdmuhs/presidential_wordcloud)
+- [the deployed shiny app](https://cdmuhs.shinyapps.io/prez_wc/)
+
+### Thank you

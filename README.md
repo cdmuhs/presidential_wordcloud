@@ -5,4 +5,6 @@ This Shiny app takes the first State of the Union Address of each of the last th
 
 Link to shiny app: https://cdmuhs.shinyapps.io/prez_wc/  
 
+Link to pitch for this project: https://rpubs.com/cdmuhs/shiny_pitch
+
 The text of the speeches was downloaded from http://www.presidency.ucsb.edu/sou.php
